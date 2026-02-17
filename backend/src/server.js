@@ -1,4 +1,6 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/db.js';
@@ -10,6 +12,9 @@ import orderRoutes from './routes/orders.js';
 await connectDB();
 
 const app = express();
+const port = Number(process.env.PORT) || 5000;
+const host = process.env.HOST || '0.0.0.0';
+
 app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 
@@ -20,5 +25,6 @@ app.use('/api/orders', orderRoutes);
 
 app.get('/api/health', (_, res) => res.json({ ok: true }));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));
+app.listen(port, host, () => {
+  console.log(`Servidor escuchando en ${host}:${port}`);
+});
